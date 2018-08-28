@@ -85,9 +85,7 @@ ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
 ```{r gender-analysis}
 atus.all %>% 
     group_by(TESEX) %>% 
-   summarise(men_avg_childcare <- if('atus.all$TESEX' == 1) {mean(CHILDCARE)} %>%
-             women_avg_childcare = if('atus.all$TESEX' == 2) {mean(CHILDCARE)} %>%
-   arrange(men_avg_childcare, women_avg_childcare))
+   summarise(avg_parent_childcare = mean(CHILDCARE))
 ```
 
 ```{r replacing-na}
@@ -101,8 +99,11 @@ sum(is.na(atus.all$TRDPFTPT))
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
-## do younger people spend more time than older people.
-filter(atus.all$)
+## do younger people spend more time with children than older people.
+names(atus.all)
+select(atus.all, CHILDCARE, TEAGE)
+older_people <- filter(atus.all, TEAGE <= 35) 
+older_people
 
 ```
 
