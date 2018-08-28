@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 ## install packages if necessary
-list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown")
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "nanair")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -20,6 +20,7 @@ library(zoo)
 library(forcats)
 library(ggthemes)
 library(knitr)
+library(naniar)
 
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project')
@@ -63,6 +64,7 @@ atus.all <- atus.sum %>%
 str(atus.all) 
 summary(atus.all)
 colnames(atus.all)
+rownames(atus.all)
  ## find average amount of time person spends doing "t120101"
 mean(atus.all$t120101)
 
@@ -71,26 +73,37 @@ mean(atus.all$t120101)
 
 ```{r creating-childcare-var}
 atus.all <- atus.all %>% 
-  mutate(CHILDCARE = sum(atus.all$t030101:atus.all$t030112))
+  mutate(CHILDCARE = sum(atus.all$t030101:atus.all$t030112) %>%
+           glimpse(CHILDCARE))
 ```
 
 ```{r childcare-density-plot}
-ggplot(atus.all, aes(CHILDCARE)) +
-    geom_density(adjust = 1/16)
+ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
+    geom_density()
 ```
 
 ```{r gender-analysis}
 atus.all %>% 
-    group_by() %>% 
-    FUNCTION()
+    group_by(TESEX) %>% 
+   summarise(men_avg_childcare <- if('atus.all$TESEX' == 1) {mean(CHILDCARE)} %>%
+             women_avg_childcare = if('atus.all$TESEX' == 2) {mean(CHILDCARE)} %>%
+   arrange(men_avg_childcare, women_avg_childcare))
 ```
 
 ```{r replacing-na}
 ## replace -1 in the variable TRDPFTPT with NA.
+  atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
+  sum(is.na(atus.all$TRDPFTPT))
 ```
+
+#find the amount of missing values in the column
+sum(is.na(atus.all$TRDPFTPT))
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
+## do younger people spend more time than older people.
+filter(atus.all$)
+
 ```
 
 ### Regression Analysis
