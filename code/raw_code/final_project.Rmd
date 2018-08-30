@@ -93,30 +93,31 @@ atus.all %>%
 ```{r replacing-na}
 ## replace -1 in the variable TRDPFTPT with NA.
   atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
-  sum(is.na(atus.all$TRDPFTPT))
-```
-##take this away, filter once done. 
+  sum(is.na(atus.all$TRDPFTPT))##take this away, filter once done. 
 grep("TRHHCHILD",names(atus.all))
 #find the amount of missing values in the column
 sum(is.na(atus.all$TRDPFTPT))
 class(atus.all$TRYHHCHILD)
-type_of
+```
+
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
 ## do younger people spend more time with children than older people.
-names(atus.all) %>%
-  select(atus.all, CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC) %>%
-       filter(atus.all, TEAGE, TRYHHCHILD) %>%
-  ggplot(atus.all, aes(x = TEAGE, y = CHILDCARE)) +
-      geom_point()
+adults_atLeast_one_kid <- atus.all %>%
+  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM) %>%
+       filter(TRCHILDNUM >  0)
+  ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
+      geom_point() 
 ## do richer people spend more time with children than poor
-names(atus.all) %>%
-  select(atus.all, CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC) %>%
- income_factor <- mutate(atus.all, all_income_by_age = TEAGE + HEFAMINC) %>%
-  ggplot(atus.all, aes(x = income_factor, y = CHILDCARE)) +
-      geom_point()
-
+income_factor <- atus.all %>%
+  mutate(all_income_by_age = TEAGE + HEFAMINC) %>%
+  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC) %>%
+  ggplot(atus.all, aes(x = HEFAMINC, y = CHILDCARE)) +
+      geom_point() +
+      labs( x = "FAMILY INCOME \n tens of thousands", y = "CHILDCARE \n minutes per week", title = "Do richer people spend more time with \n their children than poorer people?")
+## do married people spend more time with children than single parents
+## 
 
 ##make ggplot y axis is amount of time spent, x axis the age
 ##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
