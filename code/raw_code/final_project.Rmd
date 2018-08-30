@@ -132,7 +132,6 @@ adults_atLeast_one_kid <- atus.all %>%
 
 ##make ggplot y axis is amount of time spent, x axis the age
 ##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
-
 ```
 
 ### Regression Analysis
