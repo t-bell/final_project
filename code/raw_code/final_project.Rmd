@@ -83,13 +83,13 @@ atus.all <- atus.all %>%
 ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
     geom_density()
 ```
-
+This graph shows us the respondents that correlate with the amount of time spent with their children.
 ```{r gender-analysis}
 atus.all %>% 
     group_by(TESEX) %>% 
    summarise(avg_parent_childcare = mean(CHILDCARE))
 ```
-
+In this analysis we can tell that males(variable = 1) spend on average 19 mins with children compared to females (variable = 2) that spend on average 33 minutes with children. These numbers are a reflection of individual respondents without other factors(i.e. marital status, age, etc.).
 ```{r replacing-na}
 ## replace -1 in the variable TRDPFTPT with NA.
   atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
@@ -105,19 +105,30 @@ class(atus.all$TRYHHCHILD)
 ## add your exploratory analysis code here
 ## do younger people spend more time with children than older people.
 adults_atLeast_one_kid <- atus.all %>%
-  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM) %>%
+  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT) %>%
        filter(TRCHILDNUM >  0)
-  ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
-      geom_point() 
+ ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
+      geom_point()
+```
+ 
+```{r exploratory-analysis 2}
 ## do richer people spend more time with children than poor
-income_factor <- atus.all %>%
-  mutate(all_income_by_age = TEAGE + HEFAMINC) %>%
-  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC) %>%
-  ggplot(atus.all, aes(x = HEFAMINC, y = CHILDCARE)) +
+      ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE)) +
       geom_point() +
       labs( x = "FAMILY INCOME \n tens of thousands", y = "CHILDCARE \n minutes per week", title = "Do richer people spend more time with \n their children than poorer people?")
+```
+
+
+```{r exploratory-analysis 3}
 ## do married people spend more time with children than single parents
-## 
+      ggplot(adults_atLeast_one_kid, aes(x = PEMARITL, y = CHILDCARE)) +
+        geom_point()
+```
+
+``` {r exploratory-analysis 4}
+## do full-time workers spend more time than part-time workers?
+      ggplot(adults_atLeast_one_kid, aes(x = TRDPFTPT, y = CHILDCARE)) +
+        geom_point()
 
 ##make ggplot y axis is amount of time spent, x axis the age
 ##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
@@ -128,15 +139,17 @@ income_factor <- atus.all %>%
 
 ```{r reg-analysis}
 ## add your regression analysis code here
-reg_model <- lm()
-summary(reg_model)
+young_vs_old <- lm(CHILDCARE ~ TEAGE + HEFAMINC + PEMARITL +, data = adults_atLeast_one_kid)
+summary(young_vs_old)
 ```
 
 ### Exploratory Analysis of Age and Activities
 
 ```{r activity-cats}
+## must select column that reflects the row I would like to work in
+## select 
 atus.wide <- atus.all %>%
-    mutate(act01 = ,
+    mutate(act01 = rowSums(atus.all[,grep("t01", names(atus.all))]),
            act02 = ,
            act03 = ,
            act04 = ,
