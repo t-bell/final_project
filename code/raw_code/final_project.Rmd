@@ -1,6 +1,6 @@
 ---
 title: "final_project"
-author: "Jane Doe"
+author: "Tiana Bell"
 date: "8/10/2018"
 output: html_document
 ---
@@ -23,7 +23,7 @@ library(knitr)
 library(naniar)
 
 ## set working directory
-knitr::opts_knit$set(root.dir = '/cloud/project')
+knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 ```
 
 ### The Data
@@ -72,8 +72,10 @@ mean(atus.all$t120101)
 
 
 ```{r creating-childcare-var}
+
+## write out al columns up to t030112 for sum of CHILDCARE column.
 atus.all <- atus.all %>% 
-  mutate(CHILDCARE = sum(atus.all$t030101:atus.all$t030112) %>%
+  mutate(CHILDCARE = t030101 + t030102 + t030103 + t030104 + t030105 + t030106 + t030108 + t030109 + t030110 + t030111 + t030112 %>%
            glimpse(CHILDCARE))
 ```
 
@@ -93,17 +95,31 @@ atus.all %>%
   atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
   sum(is.na(atus.all$TRDPFTPT))
 ```
-
+##take this away, filter once done. 
+grep("TRHHCHILD",names(atus.all))
 #find the amount of missing values in the column
 sum(is.na(atus.all$TRDPFTPT))
+class(atus.all$TRYHHCHILD)
+type_of
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
 ## do younger people spend more time with children than older people.
-names(atus.all)
-select(atus.all, CHILDCARE, TEAGE)
-older_people <- filter(atus.all, TEAGE <= 35) 
-older_people
+names(atus.all) %>%
+  select(atus.all, CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC) %>%
+       filter(atus.all, TEAGE, TRYHHCHILD) %>%
+  ggplot(atus.all, aes(x = TEAGE, y = CHILDCARE)) +
+      geom_point()
+## do richer people spend more time with children than poor
+names(atus.all) %>%
+  select(atus.all, CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC) %>%
+ income_factor <- mutate(atus.all, all_income_by_age = TEAGE + HEFAMINC) %>%
+  ggplot(atus.all, aes(x = income_factor, y = CHILDCARE)) +
+      geom_point()
+
+
+##make ggplot y axis is amount of time spent, x axis the age
+##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
 
 ```
 
