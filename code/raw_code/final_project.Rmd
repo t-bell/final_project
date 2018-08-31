@@ -2,10 +2,11 @@
 title: "final_project"
 author: "Tiana Bell"
 date: "8/10/2018"
-output: html_document
+output:
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, catch = F}
 ## install packages if necessary
 list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "nanair", "tidyr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -22,9 +23,13 @@ library(ggthemes)
 library(knitr)
 library(naniar)
 library(tidyr)
+library(rmarkdown)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
+knitr::opts_chunk$set(error = TRUE)
+stack_size <- getOption("pandoc.stack.size", default = "512m")
 ```
+
 
 ### The Data
 
@@ -214,7 +219,7 @@ atus.wide <- atus.all %>%
 ```{r wide-to-long}
 atus.long <- atus.wide %>% 
   # use code to convert the wide format to long.
-              gather(ACTIVITY, MINS, act01:act18) %>%
+              gather(ACTIVITY, MINS, act01:act18)
 
 print(atus.long)
 ```
@@ -232,16 +237,21 @@ idk bro, i'm gettting frustrated because whet T.T
 ### Exploratory Analysis of Income and Activities
 
 ```{r activity-income}
-atus.long %>% 
+activity_by_income <-atus.long %>% 
   group_by(ACTIVITY, HEFAMINC) %>% 
-    filter(ACTIVITY == "act05") %>%
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-  ggplot(aes(x = ACTIVITY, y = TEAGE)) +
-    geom_point()
+  ggplot(aes(x = ACTIVITY)) +
+    geom_bar(aes()) +
+        scale_fill_brewer(palette = "Blues") +
+    coord_flip()
+
+activity_by_income
 ```
 
-
+went to here [https://github.com/halhen/viz-pub/tree/master/pastime-income](https://github.com/halhen/viz-pub/tree/master/pastime-income) for help. that's a lot of code I never seen lol. gonna keep searching to help understand!
 ```{r save-plot}
 ## save the plot above
+ggsave(filename = "activity_by_income.pdf", plot = last_plot())
+
 ```
