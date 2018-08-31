@@ -105,7 +105,7 @@ class(atus.all$TRYHHCHILD)
 ## add your exploratory analysis code here
 ## do younger people spend more time with children than older people.
 adults_atLeast_one_kid <- atus.all %>%
-  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT) %>%
+  select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT, TESEX) %>%
        filter(TRCHILDNUM >  0)
  ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
       geom_point() +
@@ -160,13 +160,16 @@ With the Marital Status Key* in mind \*(see below)\*, we can see that married re
 ``` {r exploratory-analysis 4}
 ## do full-time workers spend more time than part-time workers?
       ggplot(adults_atLeast_one_kid, aes(x = TRDPFTPT, y = CHILDCARE)) +
-        geom_boxplot() +
+        geom_point() +
+        scale_color_manual(breaks = c("1", "2"),
+                        values=c("red", "blue")) +
          labs( x = "Employment Status", y = "CHILDCARE \n minutes per week", title = "Do full-time workers spend more time with \n their children than part-time workers?")
+        
 
 ##make ggplot y axis is amount of time spent, x axis the age
 ##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
 ```
-
+We can see that full-time workers (represented by 1) spend more time with children than part-time workers (represented by 2).
 
 
 
@@ -174,35 +177,37 @@ With the Marital Status Key* in mind \*(see below)\*, we can see that married re
 
 ```{r reg-analysis}
 ## add your regression analysis code here
-young_vs_old <- lm(CHILDCARE ~ TEAGE + HEFAMINC + PEMARITL, data = adults_atLeast_one_kid)
-summary(young_vs_old)
+adults_atLeast_one_kid <- lm(CHILDCARE ~ TEAGE + HEFAMINC + PEMARITL + TRDPFTPT + TESEX, data = adults_atLeast_one_kid)
+summary(adults_atLeast_one_kid)
 ```
 
 ### Exploratory Analysis of Age and Activities
 
 ```{r activity-cats}
-## must select column that reflects the row I would like to work in
 ## select 
 atus.wide <- atus.all %>%
     mutate(act01 = rowSums(atus.all[,grep("t01", names(atus.all))]),
-           act02 = ,
-           act03 = ,
-           act04 = ,
-           act05 = ,
-           act06 = ,
-           act07 = ,
-           act08 = ,
-           act09 = ,
-           act10 = ,
-           act11 = ,
-           act12 = ,
-           act13 = ,
-           act14 = ,
-           act15 = ,
-           act16 = ,
+           act02 = rowSums(atus.all[,grep("t02", names(atus.all))]),
+           act03 = rowSums(atus.all[,grep("t03", names(atus.all))]),
+           act04 = rowSums(atus.all[,grep("t04", names(atus.all))]),
+           act05 = rowSums(atus.all[,grep("t05", names(atus.all))]),
+           act06 = rowSums(atus.all[,grep("t06", names(atus.all))]),
+           act07 = rowSums(atus.all[,grep("t07", names(atus.all))]),
+           act08 = rowSums(atus.all[,grep("t08", names(atus.all))]),
+           act09 = rowSums(atus.all[,grep("t09", names(atus.all))]),
+           act10 = rowSums(atus.all[,grep("t10", names(atus.all))]),
+           act11 = rowSums(atus.all[,grep("t11", names(atus.all))]),
+           act12 = rowSums(atus.all[,grep("t12", names(atus.all))]),
+           act13 = rowSums(atus.all[,grep("t13", names(atus.all))]),
+           act14 = rowSums(atus.all[,grep("t14", names(atus.all))]),
+           act15 = rowSums(atus.all[,grep("t15", names(atus.all))]),
+           act16 = rowSums(atus.all[,grep("t16", names(atus.all))]),
            # act17 = , there is no category 17 in the data
-           act18 = ) %>% 
+           act18 = rowSums(atus.all[,grep("t18", names(atus.all))])) %>% 
     select(TUCASEID, TEAGE, HEFAMINC, starts_with("act"))
+
+
+
 ```
 
 ```{r wide-to-long}
