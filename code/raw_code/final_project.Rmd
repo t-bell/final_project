@@ -188,7 +188,7 @@ summary(adults_atLeast_one_kid)
 
 ### Exploratory Analysis of Age and Activities
 
-```{r activity-cats, results = "hide}
+```{r activity-cats, results = "hide"}
 ## select 
 atus.wide <- atus.all %>%
     mutate(act01 = rowSums(atus.all[,grep("t01", names(atus.all))]),
