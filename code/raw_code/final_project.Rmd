@@ -6,7 +6,7 @@ output:
   html_document:  default
 ---
 
-```{r setup, include=FALSE, catch = F}
+```{r setup, include=FALSE, cache = FALSE}
 ## install packages if necessary
 list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -24,7 +24,6 @@ library(knitr)
 library(tidyr)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
-knitr::opts_chunk$set(error = TRUE)
 ```
 
 
@@ -130,21 +129,21 @@ In this graph we can see that a respondent's income* does not necessarily affect
 
 \* Income key:
         * 1 Less than $5,000
-        * 2 $5,000 to $7,499
-        * 3 $7,500 to $9,999
-        * 4 $10,000 to $12,499
-        * 5 $12,500 to $14,999
-        * 6 $15,000 to $19,999
-        * 7 $20,000 to $24,999
-        * 8 $25,000 to $29,999
-        * 9 $30,000 to $34,999
-        * 10 $35,000 to $39,999
-        * 11 $40,000 to $49,999
-        * 12 $50,000 to $59,999
-        * 13 $60,000 to $74,999
-        * 14 $75,000 to $99,999
-        * 15 $100,000 to $149,999
-        * 16 $150,000 and over
+        * 2 \$5,000 to \$7,499
+        * 3 \$7,500 to \$9,999
+        * 4 \$10,000 to \$12,499
+        * 5 \$12,500 to \$14,999
+        * 6 \$15,000 to \$19,999
+        * 7 \$20,000 to \$24,999
+        * 8 \$25,000 to \$29,999
+        * 9 \$30,000 to \$34,999
+        * 10 \$35,000 to \$39,999
+        * 11 \$40,000 to \$49,999
+        * 12 \$50,000 to \$59,999
+        * 13 \$60,000 to \$74,999
+        * 14 \$75,000 to \$99,999
+        * 15 \$100,000 to \$149,999
+        * 16 \$150,000 and over
         
 \*Note that income is based on household, not individual respondent.\*
 ```{r exploratory-analysis 3}
@@ -188,7 +187,7 @@ summary(adults_atLeast_one_kid)
 
 ### Exploratory Analysis of Age and Activities
 
-```{r activity-cats, results = "hide"}
+```{r activity-cats}
 ## select 
 atus.wide <- atus.all %>%
     mutate(act01 = rowSums(atus.all[,grep("t01", names(atus.all))]),
@@ -211,9 +210,7 @@ atus.wide <- atus.all %>%
            act18 = rowSums(atus.all[,grep("t18", names(atus.all))])) %>% 
     select(TUCASEID, TEAGE, HEFAMINC, starts_with("act"))
 
-    summary(atus.wide)
-    colnames(atus.wide)
-    rownames(atus.wide)
+    head(atus.wide)
 ```
 
 ```{r wide-to-long}
@@ -221,7 +218,7 @@ atus.long <- atus.wide %>%
   # use code to convert the wide format to long.
               gather(ACTIVITY, MINS, act01:act18)
 
-print(atus.long)
+head(atus.long)
 ```
 
 ```{r age-activity}
