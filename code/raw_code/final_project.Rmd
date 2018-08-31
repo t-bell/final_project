@@ -3,12 +3,12 @@ title: "final_project"
 author: "Tiana Bell"
 date: "8/10/2018"
 output:
-  html_document: default
+  html_document:  default
 ---
 
 ```{r setup, include=FALSE, catch = F}
 ## install packages if necessary
-list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "nanair", "tidyr")
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -21,13 +21,10 @@ library(zoo)
 library(forcats)
 library(ggthemes)
 library(knitr)
-library(naniar)
 library(tidyr)
-library(rmarkdown)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 knitr::opts_chunk$set(error = TRUE)
-stack_size <- getOption("pandoc.stack.size", default = "512m")
 ```
 
 
@@ -64,19 +61,22 @@ atus.all <- atus.sum %>%
 
 ### Exploratory Analysis of Child Care Data
 
-```{r initial-exploration}
+```{r initial-exploration, results = "hide"}
 ### Add Code Here
 str(atus.all) 
 summary(atus.all)
 colnames(atus.all)
 rownames(atus.all)
+```
+
+```{r average}
  ## find average amount of time person spends doing "t120101"
 mean(atus.all$t120101)
 
 ```
 
 
-```{r creating-childcare-var}
+```{r creating-childcare-var, results = "hide"}
 
 ## write out al columns up to t030112 for sum of CHILDCARE column.
 atus.all <- atus.all %>% 
@@ -188,7 +188,7 @@ summary(adults_atLeast_one_kid)
 
 ### Exploratory Analysis of Age and Activities
 
-```{r activity-cats}
+```{r activity-cats, results = "hide}
 ## select 
 atus.wide <- atus.all %>%
     mutate(act01 = rowSums(atus.all[,grep("t01", names(atus.all))]),
@@ -252,6 +252,6 @@ activity_by_income
 went to here [https://github.com/halhen/viz-pub/tree/master/pastime-income](https://github.com/halhen/viz-pub/tree/master/pastime-income) for help. that's a lot of code I never seen lol. gonna keep searching to help understand!
 ```{r save-plot}
 ## save the plot above
-ggsave(filename = "activity_by_income.pdf", plot = last_plot())
+ggsave(filename = "activity_by_income.png", plot = last_plot(), path = "/cloud/project/final_project/figures/explanatory_figures" )
 
 ```
