@@ -108,9 +108,12 @@ adults_atLeast_one_kid <- atus.all %>%
   select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT) %>%
        filter(TRCHILDNUM >  0)
  ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
-      geom_point()
+      geom_point() +
+      labs( x = "RESPONDENT'S AGE \n years", y = "CHILDCARE \n minutes per week", title = "Do younger people spend more time with \n their children than older people?")
 ```
+ In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them.
  
+\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs!*\*
 ```{r exploratory-analysis 2}
 ## do richer people spend more time with children than poor
       ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE)) +
@@ -118,27 +121,60 @@ adults_atLeast_one_kid <- atus.all %>%
       labs( x = "FAMILY INCOME \n tens of thousands", y = "CHILDCARE \n minutes per week", title = "Do richer people spend more time with \n their children than poorer people?")
 ```
 
+In this graph we can see that a respondent's income* does not neccesarily affect the amount of time spent with their respective child, other than the obvious outliers within each tax bracket. Although you can see a slight rise, or peak, after the 12th tax bracket!
 
+\* Income key:
+        * 1 Less than $5,000
+        * 2 $5,000 to $7,499
+        * 3 $7,500 to $9,999
+        * 4 $10,000 to $12,499
+        * 5 $12,500 to $14,999
+        * 6 $15,000 to $19,999
+        * 7 $20,000 to $24,999
+        * 8 $25,000 to $29,999
+        * 9 $30,000 to $34,999
+        * 10 $35,000 to $39,999
+        * 11 $40,000 to $49,999
+        * 12 $50,000 to $59,999
+        * 13 $60,000 to $74,999
+        * 14 $75,000 to $99,999
+        * 15 $100,000 to $149,999
+        * 16 $150,000 and over
+        
+\*Note that income is based on household, not individual respondent.\*
 ```{r exploratory-analysis 3}
 ## do married people spend more time with children than single parents
       ggplot(adults_atLeast_one_kid, aes(x = PEMARITL, y = CHILDCARE)) +
-        geom_point()
+        geom_point() +
+       labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
 ```
+With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse presnt on average spend more time with their children than any of the other categories of respondents. 
 
+\*Martial Status Key:
+      * 1 Married - spouse present
+      * 2 Married - spouse absent
+      * 3 Widowed
+      * 4 Divorced
+      * 5 Separated
+      * 6 Never married
 ``` {r exploratory-analysis 4}
 ## do full-time workers spend more time than part-time workers?
       ggplot(adults_atLeast_one_kid, aes(x = TRDPFTPT, y = CHILDCARE)) +
-        geom_point()
+        geom_boxplot() +
+         labs( x = "Employment Status", y = "CHILDCARE \n minutes per week", title = "Do full-time workers spend more time with \n their children than part-time workers?")
 
 ##make ggplot y axis is amount of time spent, x axis the age
 ##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
 ```
 
+
+
+
 ### Regression Analysis
 
 ```{r reg-analysis}
 ## add your regression analysis code here
-young_vs_old <- lm(CHILDCARE ~ TEAGE + HEFAMINC + PEMARITL +, data = adults_atLeast_one_kid)
+young_vs_old <- lm(CHILDCARE ~ TEAGE + HEFAMINC + PEMARITL, data = adults_atLeast_one_kid)
 summary(young_vs_old)
 ```
 
