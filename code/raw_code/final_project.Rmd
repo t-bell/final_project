@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 ## install packages if necessary
-list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "nanair")
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "nanair", "tidyr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -21,7 +21,7 @@ library(forcats)
 library(ggthemes)
 library(knitr)
 library(naniar)
-
+library(tidyr)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 ```
@@ -206,20 +206,25 @@ atus.wide <- atus.all %>%
            act18 = rowSums(atus.all[,grep("t18", names(atus.all))])) %>% 
     select(TUCASEID, TEAGE, HEFAMINC, starts_with("act"))
 
-
-
+    summary(atus.wide)
+    colnames(atus.wide)
+    rownames(atus.wide)
 ```
 
 ```{r wide-to-long}
 atus.long <- atus.wide %>% 
   # use code to convert the wide format to long.
+              gather(ACTIVITY, MINS, act01:act18)
+
+print(atus.long)
 ```
 
 ```{r age-activity}
 atus.long %>% 
     group_by(ACTIVITY, TEAGE) %>% 
     summarise(AVGMINS = mean(MINS)) %>% 
-    ggplot() +
+    ggplot(aes(x = ACTIVITY, y = AVGMINS)) +
+        geom_point()
 ```
 
 ### Exploratory Analysis of Income and Activities
@@ -227,7 +232,11 @@ atus.long %>%
 ```{r activity-income}
 atus.long %>% 
   group_by(ACTIVITY, HEFAMINC) %>% 
+    filter(ACTIVITY == "act05") %>%
   ## add the rest of the code here
+  summarise(AVGMINS_WRK = mean(MINS)) %>%
+  ggplot(aes(x = ACTIVITY, y = AVGMINS_WRK)) +
+    geom_point()
 ```
 
 
