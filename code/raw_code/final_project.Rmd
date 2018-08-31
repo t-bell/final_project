@@ -214,18 +214,20 @@ atus.wide <- atus.all %>%
 ```{r wide-to-long}
 atus.long <- atus.wide %>% 
   # use code to convert the wide format to long.
-              gather(ACTIVITY, MINS, act01:act18)
+              gather(ACTIVITY, MINS, act01:act18) %>%
 
 print(atus.long)
 ```
 
 ```{r age-activity}
 atus.long %>% 
-    group_by(ACTIVITY, TEAGE) %>% 
+    group_by(ACTIVITY, TEAGE) %>%
     summarise(AVGMINS = mean(MINS)) %>% 
-    ggplot(aes(x = ACTIVITY, y = AVGMINS)) +
+    ggplot(aes(x = TEAGE, y = AVGMINS)) +
         geom_point()
 ```
+
+idk bro, i'm gettting frustrated because whet T.T
 
 ### Exploratory Analysis of Income and Activities
 
@@ -235,7 +237,7 @@ atus.long %>%
     filter(ACTIVITY == "act05") %>%
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-  ggplot(aes(x = ACTIVITY, y = AVGMINS_WRK)) +
+  ggplot(aes(x = ACTIVITY, y = TEAGE)) +
     geom_point()
 ```
 
