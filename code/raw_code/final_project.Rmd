@@ -108,19 +108,21 @@ class(atus.all$TRYHHCHILD)
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
 ## do younger people spend more time with children than older people.
+
 adults_atLeast_one_kid <- atus.all %>%
   select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT, TESEX) %>%
        filter(TRCHILDNUM >  0)
- ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
+
+ ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE, col = PEMARITL)) +
       geom_point() +
       labs( x = "RESPONDENT'S AGE \n years", y = "CHILDCARE \n minutes per week", title = "Do younger people spend more time with \n their children than older people?")
 ```
- In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them.
+ In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them. It is also colored by respodents' marital status.
  
-\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs!*\*
+\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs! CHECK MARITAL STATUS PLOT FOR KEY!*\*
 ```{r exploratory-analysis 2}
 ## do richer people spend more time with children than poor
-      ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE)) +
+      ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE, col = TESEX )) +
       geom_point() +
       labs( x = "FAMILY INCOME \n tens of thousands", y = "CHILDCARE \n minutes per week", title = "Do richer people spend more time with \n their children than poorer people?")
 ```
@@ -238,9 +240,9 @@ activity_by_income <-atus.long %>%
   group_by(ACTIVITY, HEFAMINC) %>% 
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-  ggplot(aes(x = ACTIVITY)) +
-    geom_bar(aes()) +
-        scale_fill_brewer(palette = "Blues") +
+  ggplot(aes(x = ACTIVITY,y = HEFAMINC, fill = "variable")) +
+    geom_bar(stat = "identity") +
+        scale_fill_hue() +
     coord_flip()
 
 activity_by_income
