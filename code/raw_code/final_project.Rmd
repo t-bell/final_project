@@ -113,8 +113,9 @@ adults_atLeast_one_kid <- atus.all %>%
   select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT, TESEX) %>%
        filter(TRCHILDNUM >  0)
 
- ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE, col = PEMARITL)) +
-      geom_point() +
+ ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
+      geom_point(aes(color = factor(TEAGE)), size = 1) +
+      theme(legend.position = "none")
       labs( x = "RESPONDENT'S AGE \n years", y = "CHILDCARE \n minutes per week", title = "Do younger people spend more time with \n their children than older people?")
 ```
  In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them. It is also colored by respodents' marital status.
@@ -151,7 +152,7 @@ In this graph we can see that a respondent's income* does not necessarily affect
 ```{r exploratory-analysis 3}
 ## do married people spend more time with children than single parents
       ggplot(adults_atLeast_one_kid, aes(x = PEMARITL, y = CHILDCARE)) +
-        geom_point() +
+        geom_boxplot() +
        labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
 ```
 With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse present on average spend more time with their children than any of the other categories of respondents. 
