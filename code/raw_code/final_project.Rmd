@@ -8,7 +8,7 @@ output:
 
 ```{r setup, include=FALSE, cache = FALSE}
 ## install packages if necessary
-list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools", "ggpubr")
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -22,7 +22,6 @@ library(forcats)
 library(ggthemes)
 library(knitr)
 library(tidyr)
-library(ggpubr)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 ```
@@ -157,6 +156,10 @@ In this graph we can see that a respondent's income* does not necessarily affect
         geom_histogram(binwidth = 0.2) +
        labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
 ```
+
+
+
+
 With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse present on average spend more time with their children than any of the other categories of respondents. 
 
 \*Martial Status Key:
@@ -169,9 +172,7 @@ With the Marital Status Key* in mind \*(see below)\*, we can see that married re
 ``` {r exploratory-analysis 4}
 ## do full-time workers spend more time than part-time workers?
       ggplot(adults_atLeast_one_kid, aes(x = TRDPFTPT, y = CHILDCARE)) +
-        geom_point() +
-        scale_color_manual(breaks = c("1", "2"),
-                        values=c("red", "blue")) +
+        geom_point(aes(color = TRDPFTPT)) +
          labs( x = "Employment Status", y = "CHILDCARE \n minutes per week", title = "Do full-time workers spend more time with \n their children than part-time workers?")
         
 
@@ -241,7 +242,9 @@ df.long %>%
         facet_grid(rows = vars(ACTIVITY)) +
         coord_flip()
 ```         
-We were asked to plot the respondent's age against the average amount of time for each activity provided! 
+We were asked to plot the respondent's age against the average amount of time for each activity provided! We are asked the question: Which categories does the average time spent vary by age?
+
+In this plot we can see that activites 1, 5, and 12, vary by age!
 
 ### Exploratory Analysis of Income and Activities
 
@@ -250,15 +253,14 @@ activity_by_income <-atus.long %>%
   group_by(ACTIVITY, HEFAMINC) %>% 
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-  ggplot(aes(x = ACTIVITY,y = HEFAMINC, fill = "AVGMIN_WRK")) +
-    geom_bar(stat = "identity") +
-        scale_fill_hue() +
-    coord_flip()
+  ggplot(aes(x = ACTIVITY,y = AVGMINS_WRK)) +
+    geom_bar(stat = "identity", aes(color = factor(HEFAMINC))) +
+        scale_colour_hue(h = c(180, 270)) +
+        coord_flip()
 
 activity_by_income
 ```
-
-went to here [https://github.com/halhen/viz-pub/tree/master/pastime-income](https://github.com/halhen/viz-pub/tree/master/pastime-income) for help. that's a lot of code I never seen lol. gonna keep searching to help understand!
+In this graph I was trying to imitate what Henrik Lindberg did in his analysis of Income distributions in America's pastimes [https://raw.githubusercontent.com/halhen/viz-pub/master/pastime-income/pastime.png](https://raw.githubusercontent.com/halhen/viz-pub/master/pastime-income/pastime.png). I am able to properly graph, but I am unable to get the proportions correctly!
 ```{r save-plot}
 ## save the plot above
 ggsave(filename = "activity_by_income.png", plot = last_plot(), path = "/cloud/project/final_project/figures/explanatory_figures" )
