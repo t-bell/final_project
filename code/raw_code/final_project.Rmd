@@ -43,7 +43,7 @@ There are multiple ways to access the ATUS data; however, for this project, you'
 You will be brought to a new screen. Scroll down to the section **2016 Basic ATUS Data Files**. Under this section, you'll want to **click to download** the following two files: `ATUS 2016 Activity summary file (zip)` and `ATUS-CPS 2016 file (zip)`. 
 
 * `ATUS 2016 Activity summary file (zip)` contains information about the total time each ATUS respondent spent doing each activity listed in the survey. The activity data includes information such as activity codes, activity start and stop times, and locations.
-* `ATUS-CPS 2016 file (zip)` contains information about each household member of all individuals selected to participate in the ATUS.
+* `ATUS-CPS 2016 file (zip)` contains informaton about each household member of all individuals selected to participate in the ATUS.
 
 Once they've been downloaded, you'll need to **unzip the files**. Once unzipped, you will see the dataset in a number of different file formats including `.sas`, `.sps`, and `.dat` files. **We'll be working with the .dat files.**
 
@@ -80,7 +80,6 @@ mean(atus.all$t120101)
 
 
 ```{r creating-childcare-var, results = "hide"}
-
 ## write out al columns up to t030112 for sum of CHILDCARE column.
 atus.all <- atus.all %>% 
   mutate(CHILDCARE = t030101 + t030102 + t030103 + t030104 + t030105 + t030106 + t030108 + t030109 + t030110 + t030111 + t030112 %>%
@@ -88,13 +87,12 @@ atus.all <- atus.all %>%
 ```
 Creating new column.
 ```{r childcare-density-plot}
-ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
+childcare_density_plot <- ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
     geom_density()
 ```
 This graph shows us the respondents that correlate with the amount of time spent with their children.
 ```{r gender-analysis}
 #this chart will show the average for the amount of time men and women spend with children.
-
 #pull from the desired data frame
 atus.all %>% 
   #group by variable you are trying to isolate, in this case gender
@@ -105,7 +103,6 @@ atus.all %>%
 In this analysis we can tell that males(variable = 1) spend on average 19 mins with children compared to females (variable = 2) that spend on average 33 minutes with children. These numbers are a reflection of individual respondents without other factors(i.e. marital status, age, etc.).
 ```{r replacing-na}
 #exclude all missing factors
-
 ## replace -1 in the variable TRDPFTPT with NA.
   atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
   sum(is.na(atus.all$TRDPFTPT))##take this away, filter once done. 
@@ -117,9 +114,7 @@ class(atus.all$TRYHHCHILD)
 The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a \-1 in the TRDPFTPT column. This will also change the class of our column.
 
 ```{r exploratory-analysis}
-## add your exploratory analysis code here
 ## do younger people spend more time with children than older people.
-
 adults_atLeast_one_kid <- atus.all %>%
   select(CHILDCARE, TEAGE, TRYHHCHILD, HEFAMINC, TRCHILDNUM, PEMARITL, TRDPFTPT, TESEX) %>%
        filter(TRCHILDNUM >  0)
@@ -143,22 +138,22 @@ adults_atLeast_one_kid <- atus.all %>%
 In this graph we can see that a respondent's income* does not necessarily affect the amount of time spent with their respective child, other than the obvious outliers within each tax bracket. Although you can see a slight rise, or peak, after the 12th tax bracket! The colors are by age.
 
 \* Income key:
-        * 1 Less than \$5,000
-        * 2 \$5,000 to \$7,499
-        * 3 \$7,500 to \$9,999
-        * 4 \$10,000 to \$12,499
-        * 5 \$12,500 to \$14,999
-        * 6 \$15,000 to \$19,999
-        * 7 \$20,000 to \$24,999
-        * 8 \$25,000 to \$29,999
-        * 9 \$30,000 to \$34,999
-        * 10 \$35,000 to \$39,999
-        * 11 \$40,000 to \$49,999
-        * 12 \$50,000 to \$59,999
-        * 13 \$60,000 to \$74,999
-        * 14 \$75,000 to \$99,999
-        * 15 \$100,000 to \$149,999
-        * 16 \$150,000 and over
+        + 1 Less than \$5,000
+        + 2 \$5,000 to \$7,499
+        + 3 \$7,500 to \$9,999
+        + 4 \$10,000 to \$12,499
+        + 5 \$12,500 to \$14,999
+        + 6 \$15,000 to \$19,999
+        + 7 \$20,000 to \$24,999
+        + 8 \$25,000 to \$29,999
+        + 9 \$30,000 to \$34,999
+        + 10 \$35,000 to \$39,999
+        + 11 \$40,000 to \$49,999
+        + 12 \$50,000 to \$59,999
+        + 13 \$60,000 to \$74,999
+        + 14 \$75,000 to \$99,999
+        + 15 \$100,000 to \$149,999
+        + 16 \$150,000 and over
         
 \*Note that income is based on household, not individual respondent.\*
 ```{r exploratory-analysis 3}
@@ -171,24 +166,20 @@ In this graph we can see that a respondent's income* does not necessarily affect
 With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse present on average spend more time with their children than any of the other categories of respondents. 
 
 \*Martial Status Key:
-      * 1 Married - spouse present
-      * 2 Married - spouse absent
-      * 3 Widowed
-      * 4 Divorced
-      * 5 Separated
-      * 6 Never married
+      + 1 Married - spouse present
+      + 2 Married - spouse absent
+      + 3 Widowed
+      + 4 Divorced
+      + 5 Separated
+      + 6 Never married
 ``` {r exploratory-analysis 4}
 ## do full-time workers spend more time than part-time workers?
       ggplot(adults_atLeast_one_kid, aes(x = TRDPFTPT, y = CHILDCARE)) +
         geom_point(aes(color = TRDPFTPT)) +
          labs( x = "Employment Status", y = "CHILDCARE \n minutes per week", title = "Do full-time workers spend more time with \n their children than part-time workers?")
-        
-
-##make ggplot y axis is amount of time spent, x axis the age
-##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
 ```
-We can see that full-time workers \*(represented by 1)\* spend more time with children than part-time workers \*(represented by 2)\*.
 
+We can see that full-time workers \*(represented by 1)\* spend more time with children than part-time workers \*(represented by 2)\*.
 
 ### Regression Analysis
 
@@ -236,7 +227,6 @@ head(df.long)
 
 ```{r age-activity}
 # Plot for average amount of time spent by age!
-
 # pull from the desired data set, in this case we are working with df.long
 df.long %>%      
 # follow the instructions and grouby() Activity and age
@@ -276,5 +266,4 @@ In this graph I was trying to imitate what Henrik Lindberg did in his analysis o
 ```{r save-plot}
 ## save the plot above
 ggsave(filename = "activity_by_income.png", plot = last_plot(), path = "/cloud/project/final_project/figures/explanatory_figures" )
-
 ```
