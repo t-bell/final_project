@@ -227,15 +227,20 @@ head(atus.long)
 ```
 
 ```{r age-activity}
-df.long %>% 
-    group_by(ACTIVITY, TEAGE) %>%
-    summarise(AVGMINS = mean(MINS)) %>% 
-    ggplot(aes(x = ACTIVITY, y = AVGMINS)) +
-        geom_bar(stat = "identity", aes(color = factor(TEAGE)))+
-        coord_flip()
-```
+# Plot for average amount of time spent by age!
 
-idk bro, i'm getting frustrated because whet T.T
+# pull from the desired data set, in this case we are working with df.long
+df.long %>%      
+# follow the instructions and grouby() Activity and age
+    group_by(ACTIVITY, TEAGE) %>%
+# calculate the average amount of time people spend on each activity
+    summarise(AVGMINS = mean(MINS)) %>% 
+# Plot the graph!  
+    ggplot(aes(x = TEAGE, y = AVGMINS)) +
+        geom_bar(stat = "identity", aes(color = factor(ACTIVITY)))+
+        coord_flip()
+```         
+We were asked to plot the respondent's age against the average amount of time for each activity provided! 
 
 ### Exploratory Analysis of Income and Activities
 
