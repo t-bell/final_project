@@ -86,7 +86,7 @@ atus.all <- atus.all %>%
   mutate(CHILDCARE = t030101 + t030102 + t030103 + t030104 + t030105 + t030106 + t030108 + t030109 + t030110 + t030111 + t030112 %>%
            glimpse(CHILDCARE))
 ```
-
+Creating new column.
 ```{r childcare-density-plot}
 ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
     geom_density()
@@ -114,7 +114,7 @@ grep("TRHHCHILD",names(atus.all))
 sum(is.na(atus.all$TRDPFTPT))
 class(atus.all$TRYHHCHILD)
 ```
-The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a -1 in the TRDPFTPT column. This will also change the class of our column.
+The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a \*-1 in the TRDPFTPT column. This will also change the class of our column.
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
@@ -129,9 +129,9 @@ adults_atLeast_one_kid <- atus.all %>%
       theme(legend.position = "none") +
       labs( x = "RESPONDENT'S AGE \n years", y = "CHILDCARE \n minutes per week", title = "Do younger people spend more time with \n their children than older people?")
 ```
- In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them. It is also colored by respodents' marital status.
+ In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them. It is also colored by respondents' marital status.
  
-\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs!*\*
+\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs!\**
 ```{r exploratory-analysis 2}
 ## do richer people spend more time with children than poor
       ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE, col = TESEX )) +
@@ -256,7 +256,7 @@ df.long %>%
 ```         
 We were asked to plot the respondent's age against the average amount of time for each activity provided! We are asked the question: Which categories does the average time spent vary by age?
 
-In this plot we can see that activites 1, 5, and 12, vary by age!
+In this plot we can see that activities 1, 5, and 12, vary by age!
 
 ### Exploratory Analysis of Income and Activities
 
