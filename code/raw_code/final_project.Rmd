@@ -52,8 +52,10 @@ Use the first approach explained above to download and access the ATUS data for 
 ### Importing data
 
 ```{r atus-data, warning=FALSE}
+#load data from data files onto the workspace
 atus.cps <- read.delim('/cloud/project/final_project/data/raw_data/atuscps_2016.dat', sep=",")
 atus.sum <- read.delim('/cloud/project/final_project/data/raw_data/atussum_2016.dat', sep=",")
+# joining all three files together by respondents' ID
 atus.all <- atus.sum %>%
   left_join(atus.cps %>% filter(TULINENO==1), by = c("TUCASEID"))
 ```
@@ -61,7 +63,7 @@ atus.all <- atus.sum %>%
 ### Exploratory Analysis of Child Care Data
 
 ```{r initial-exploration, results = "hide"}
-### Add Code Here
+### general exploratory code
 str(atus.all) 
 summary(atus.all)
 colnames(atus.all)
@@ -89,12 +91,19 @@ ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
 ```
 This graph shows us the respondents that correlate with the amount of time spent with their children.
 ```{r gender-analysis}
+#this chart will show the average for the amount of time men and women spend with children.
+
+#pull from the desired data frame
 atus.all %>% 
+  #group by variable you are trying to isolate, in this case gender
     group_by(TESEX) %>% 
+  #create a variable to get expected outcome
    summarise(avg_parent_childcare = mean(CHILDCARE))
 ```
 In this analysis we can tell that males(variable = 1) spend on average 19 mins with children compared to females (variable = 2) that spend on average 33 minutes with children. These numbers are a reflection of individual respondents without other factors(i.e. marital status, age, etc.).
 ```{r replacing-na}
+#exclude all missing factors
+
 ## replace -1 in the variable TRDPFTPT with NA.
   atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
   sum(is.na(atus.all$TRDPFTPT))##take this away, filter once done. 
@@ -103,7 +112,7 @@ grep("TRHHCHILD",names(atus.all))
 sum(is.na(atus.all$TRDPFTPT))
 class(atus.all$TRYHHCHILD)
 ```
-
+The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a -1. This will also change the class of our column.
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
