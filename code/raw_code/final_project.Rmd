@@ -22,6 +22,8 @@ library(forcats)
 library(ggthemes)
 library(knitr)
 library(tidyr)
+library(rmarkdown)
+library(devtools)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 ```
@@ -112,7 +114,7 @@ grep("TRHHCHILD",names(atus.all))
 sum(is.na(atus.all$TRDPFTPT))
 class(atus.all$TRYHHCHILD)
 ```
-The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a -1. This will also change the class of our column.
+The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a -1 in the TRDPFTPT column. This will also change the class of our column.
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
@@ -249,7 +251,8 @@ df.long %>%
     ggplot(aes(x = TEAGE, y = AVGMINS)) +
         geom_bar(stat = "identity", aes(color = factor(TEAGE)))+
         facet_grid(rows = vars(ACTIVITY)) +
-        coord_flip()
+        coord_flip()+
+        labs( title = "Average amount of time spent \n per person's age")
 ```         
 We were asked to plot the respondent's age against the average amount of time for each activity provided! We are asked the question: Which categories does the average time spent vary by age?
 
@@ -265,7 +268,8 @@ activity_by_income <-atus.long %>%
   ggplot(aes(x = ACTIVITY,y = AVGMINS_WRK)) +
     geom_bar(stat = "identity", aes(color = factor(HEFAMINC))) +
         scale_colour_hue(h = c(180, 270)) +
-        coord_flip()
+        coord_flip()+
+         labs(title = "Amount of time spent on activities \n by income")
 
 activity_by_income
 ```
