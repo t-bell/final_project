@@ -8,7 +8,7 @@ output:
 
 ```{r setup, include=FALSE, cache = FALSE}
 ## install packages if necessary
-list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools")
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools", "ggpubr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -22,6 +22,7 @@ library(forcats)
 library(ggthemes)
 library(knitr)
 library(tidyr)
+library(ggpubr)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 ```
@@ -115,20 +116,21 @@ adults_atLeast_one_kid <- atus.all %>%
 
  ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
       geom_point(aes(color = factor(TEAGE)), size = 1) +
-      theme(legend.position = "none")
+      theme(legend.position = "none") +
       labs( x = "RESPONDENT'S AGE \n years", y = "CHILDCARE \n minutes per week", title = "Do younger people spend more time with \n their children than older people?")
 ```
  In this graph we are answering the question of whether younger respondents spend more time with children than with older respondents.* Since our data set are respondents between the ages 15 to around 85, our dividing(median) age is 50. By looking at the chart you can see that individuals below 50 spend more time with their children than those older than them. It is also colored by respodents' marital status.
  
-\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs! CHECK MARITAL STATUS PLOT FOR KEY!*\*
+\** Note that this data only includes respondents with at least one child within the household that they take care of. And this variable will stay constant for the next three graphs!*\*
 ```{r exploratory-analysis 2}
 ## do richer people spend more time with children than poor
       ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE, col = TESEX )) +
-      geom_point() +
+      geom_point(aes(color = factor(TEAGE)), size = 1) +
+      theme(legend.position = "none") +
       labs( x = "FAMILY INCOME \n tens of thousands", y = "CHILDCARE \n minutes per week", title = "Do richer people spend more time with \n their children than poorer people?")
 ```
 
-In this graph we can see that a respondent's income* does not necessarily affect the amount of time spent with their respective child, other than the obvious outliers within each tax bracket. Although you can see a slight rise, or peak, after the 12th tax bracket!
+In this graph we can see that a respondent's income* does not necessarily affect the amount of time spent with their respective child, other than the obvious outliers within each tax bracket. Although you can see a slight rise, or peak, after the 12th tax bracket! The colors are by age.
 
 \* Income key:
         * 1 Less than $5,000
@@ -151,8 +153,8 @@ In this graph we can see that a respondent's income* does not necessarily affect
 \*Note that income is based on household, not individual respondent.\*
 ```{r exploratory-analysis 3}
 ## do married people spend more time with children than single parents
-      ggplot(adults_atLeast_one_kid, aes(x = PEMARITL, y = CHILDCARE)) +
-        geom_boxplot() +
+      ggplot(adults_atLeast_one_kid, aes(x = PEMARITL, stat = CHILDCARE)) +
+        geom_histogram(binwidth = 0.2) +
        labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
 ```
 With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse present on average spend more time with their children than any of the other categories of respondents. 
@@ -217,7 +219,7 @@ atus.wide <- atus.all %>%
 ```
 
 ```{r wide-to-long}
-atus.long <- atus.wide %>% 
+df.long <- atus.wide %>% 
   # use code to convert the wide format to long.
               gather(ACTIVITY, MINS, act01:act18)
 
@@ -225,11 +227,12 @@ head(atus.long)
 ```
 
 ```{r age-activity}
-atus.long %>% 
+df.long %>% 
     group_by(ACTIVITY, TEAGE) %>%
     summarise(AVGMINS = mean(MINS)) %>% 
-    ggplot(aes(x = TEAGE, y = AVGMINS)) +
-        geom_point()
+    ggplot(aes(x = ACTIVITY, y = AVGMINS)) +
+        geom_bar(stat = "identity", aes(color = factor(TEAGE)))+
+        coord_flip()
 ```
 
 idk bro, i'm getting frustrated because whet T.T
@@ -241,7 +244,7 @@ activity_by_income <-atus.long %>%
   group_by(ACTIVITY, HEFAMINC) %>% 
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-  ggplot(aes(x = ACTIVITY,y = HEFAMINC, fill = "variable")) +
+  ggplot(aes(x = ACTIVITY,y = HEFAMINC, fill = "AVGMIN_WRK")) +
     geom_bar(stat = "identity") +
         scale_fill_hue() +
     coord_flip()
