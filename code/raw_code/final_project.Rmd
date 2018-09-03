@@ -114,7 +114,7 @@ grep("TRHHCHILD",names(atus.all))
 sum(is.na(atus.all$TRDPFTPT))
 class(atus.all$TRYHHCHILD)
 ```
-The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a \*-1 in the TRDPFTPT column. This will also change the class of our column.
+The next thing to do is to do some substitutions in how we want missing values to be read in certain columns and data frames. This step helps reduce confusion as well as unneeded data that may mess up future graphs or equations. In this particular code chunk we are telling the computer that we want every NA \*(which means missing value)\* to be a \-1 in the TRDPFTPT column. This will also change the class of our column.
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
@@ -168,9 +168,6 @@ In this graph we can see that a respondent's income* does not necessarily affect
        labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
 ```
 
-
-
-
 With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse present on average spend more time with their children than any of the other categories of respondents. 
 
 \*Martial Status Key:
@@ -190,8 +187,7 @@ With the Marital Status Key* in mind \*(see below)\*, we can see that married re
 ##make ggplot y axis is amount of time spent, x axis the age
 ##y axis is on the left hand side, x axis is on the right hand side; time spent variable would be on the left hand side
 ```
-We can see that full-time workers (represented by 1) spend more time with children than part-time workers (represented by 2).
-
+We can see that full-time workers \*(represented by 1)\* spend more time with children than part-time workers \*(represented by 2)\*.
 
 
 ### Regression Analysis
@@ -235,7 +231,7 @@ df.long <- atus.wide %>%
   # use code to convert the wide format to long.
               gather(ACTIVITY, MINS, act01:act18)
 
-head(atus.long)
+head(df.long)
 ```
 
 ```{r age-activity}
@@ -254,14 +250,16 @@ df.long %>%
         coord_flip()+
         labs( title = "Average amount of time spent \n per person's age")
 ```         
-We were asked to plot the respondent's age against the average amount of time for each activity provided! We are asked the question: Which categories does the average time spent vary by age?
+
+
+We were asked to plot the respondent's age against the average amount of time for each activity provided! We are asked the question \: Which categories does the average time spent vary by age?
 
 In this plot we can see that activities 1, 5, and 12, vary by age!
 
 ### Exploratory Analysis of Income and Activities
 
 ```{r activity-income}
-activity_by_income <-atus.long %>% 
+activity_by_income <-df.long %>% 
   group_by(ACTIVITY, HEFAMINC) %>% 
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
