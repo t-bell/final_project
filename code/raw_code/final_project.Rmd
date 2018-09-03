@@ -237,7 +237,8 @@ df.long %>%
     summarise(AVGMINS = mean(MINS)) %>% 
 # Plot the graph!  
     ggplot(aes(x = TEAGE, y = AVGMINS)) +
-        geom_bar(stat = "identity", aes(color = factor(ACTIVITY)))+
+        geom_bar(stat = "identity", aes(color = factor(TEAGE)))+
+        facet_grid(rows = vars(ACTIVITY)) +
         coord_flip()
 ```         
 We were asked to plot the respondent's age against the average amount of time for each activity provided! 
