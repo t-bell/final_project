@@ -143,7 +143,7 @@ adults_atLeast_one_kid <- atus.all %>%
 In this graph we can see that a respondent's income* does not necessarily affect the amount of time spent with their respective child, other than the obvious outliers within each tax bracket. Although you can see a slight rise, or peak, after the 12th tax bracket! The colors are by age.
 
 \* Income key:
-        * 1 Less than $5,000
+        * 1 Less than \$5,000
         * 2 \$5,000 to \$7,499
         * 3 \$7,500 to \$9,999
         * 4 \$10,000 to \$12,499
