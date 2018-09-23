@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE, cache = FALSE}
 ## install packages if necessary
-list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools")
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr", "devtools", "wesanderson")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -26,6 +26,7 @@ library(knitr)
 library(tidyr)
 library(rmarkdown)
 library(devtools)
+library(wesanderson)
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
 ```
@@ -103,17 +104,23 @@ childcare_density_plot <-
   ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
     geom_density()
 
+#call plot so R can graph
 childcare_density_plot
+
+## save the plot above
+ggsave(filename = "childcare_density_plot.png", plot = last_plot(), path = "/cloud/project/final_project/figures/exploratory_figures" )
 ```
-This graph shows us the respondents that correlate with the amount of time spent with their children.
+
 ```{r gender-analysis}
 #this chart will show the average for the amount of time men and women spend with children.
 #pull from the desired data frame
-atus.all %>% 
+battle_of_the_sexes <- atus.all %>% 
   #group by variable you are trying to isolate, in this case gender
     group_by(TESEX) %>% 
   #create a variable to get expected outcome
    summarise(avg_parent_childcare = mean(CHILDCARE))
+
+battle_of_the_sexes
 ```
 In this analysis we can tell that males(variable = 1) spend on average 19 mins with children compared to females (variable = 2) that spend on average 33 minutes with children. These numbers are a reflection of individual respondents without other factors(i.e. marital status, age, etc.).
 ```{r replacing-na}
@@ -135,7 +142,7 @@ adults_atLeast_one_kid <- atus.all %>%
        filter(TRCHILDNUM >  0)
 
  ggplot(adults_atLeast_one_kid, aes(x = TEAGE, y = CHILDCARE)) +
-      geom_point(aes(color = factor(TEAGE)), size = 1) +
+      geom_point(aes(color = factor(TEAGE)), size = 0.5) +
       theme(legend.position = "none") +
       labs( x = "RESPONDENT'S AGE \n years", y = "CHILDCARE \n minutes per week", title = "Do younger people spend more time with \n their children than older people?")
 ```
@@ -145,7 +152,7 @@ adults_atLeast_one_kid <- atus.all %>%
 ```{r exploratory-analysis 2}
 ## do richer people spend more time with children than poor
       ggplot(adults_atLeast_one_kid, aes(x = HEFAMINC, y = CHILDCARE, col = TESEX )) +
-      geom_point(aes(color = factor(TEAGE)), size = 1) +
+      geom_point(aes(color = factor(TEAGE), ), size = 1) +
       theme(legend.position = "none") +
       labs( x = "FAMILY INCOME \n tens of thousands", y = "CHILDCARE \n minutes per week", title = "Do affluent respondents spend more time with \n their children than non-affluent respondents?")
 ```
@@ -211,24 +218,24 @@ summary(adults_atLeast_one_kid)
 ```{r activity-cats}
 ## select 
 atus.wide <- atus.all %>%
-    mutate(act01 = rowSums(atus.all[,grep("t01", names(atus.all))]),
-           act02 = rowSums(atus.all[,grep("t02", names(atus.all))]),
-           act03 = rowSums(atus.all[,grep("t03", names(atus.all))]),
-           act04 = rowSums(atus.all[,grep("t04", names(atus.all))]),
-           act05 = rowSums(atus.all[,grep("t05", names(atus.all))]),
-           act06 = rowSums(atus.all[,grep("t06", names(atus.all))]),
-           act07 = rowSums(atus.all[,grep("t07", names(atus.all))]),
-           act08 = rowSums(atus.all[,grep("t08", names(atus.all))]),
-           act09 = rowSums(atus.all[,grep("t09", names(atus.all))]),
-           act10 = rowSums(atus.all[,grep("t10", names(atus.all))]),
-           act11 = rowSums(atus.all[,grep("t11", names(atus.all))]),
-           act12 = rowSums(atus.all[,grep("t12", names(atus.all))]),
-           act13 = rowSums(atus.all[,grep("t13", names(atus.all))]),
-           act14 = rowSums(atus.all[,grep("t14", names(atus.all))]),
-           act15 = rowSums(atus.all[,grep("t15", names(atus.all))]),
-           act16 = rowSums(atus.all[,grep("t16", names(atus.all))]),
+    mutate(PersonalCare = rowSums(atus.all[,grep("t01", names(atus.all))]),
+           HouseholdActivites = rowSums(atus.all[,grep("t02", names(atus.all))]),
+           CaringForHouseholdMembers = rowSums(atus.all[,grep("t03", names(atus.all))]),
+           CaringForNonHousholdMembers = rowSums(atus.all[,grep("t04", names(atus.all))]),
+           WorknWorkActivities = rowSums(atus.all[,grep("t05", names(atus.all))]),
+           Education = rowSums(atus.all[,grep("t06", names(atus.all))]),
+           ConsumerPurchases = rowSums(atus.all[,grep("t07", names(atus.all))]),
+           ProfessionalnPersonalCareServices = rowSums(atus.all[,grep("t08", names(atus.all))]),
+           HouseholdServices = rowSums(atus.all[,grep("t09", names(atus.all))]),
+           GovServicesnCivilObligations = rowSums(atus.all[,grep("t10", names(atus.all))]),
+           EatingnDrinking = rowSums(atus.all[,grep("t11", names(atus.all))]),
+           LeisureActivities = rowSums(atus.all[,grep("t12", names(atus.all))]),
+           ExerciseRecreationActivities = rowSums(atus.all[,grep("t13", names(atus.all))]),
+           ReligiousActivities = rowSums(atus.all[,grep("t14", names(atus.all))]),
+           VolunteerActivities = rowSums(atus.all[,grep("t15", names(atus.all))]),
+           TelephoneCallsnUse = rowSums(atus.all[,grep("t16", names(atus.all))]),
            # act17 = , there is no category 17 in the data
-           act18 = rowSums(atus.all[,grep("t18", names(atus.all))])) %>% 
+           Traveling = rowSums(atus.all[,grep("t18", names(atus.all))])) %>% 
     select(TUCASEID, TEAGE, HEFAMINC, starts_with("act"))
 
     head(atus.wide)
