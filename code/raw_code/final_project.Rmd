@@ -3,7 +3,9 @@ title: "final_project"
 author: "Tiana Bell"
 date: "8/10/2018"
 output:
-  html_document:  default
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE, cache = FALSE}
@@ -38,7 +40,7 @@ Included in the data are main demographic variables such as respondents' age, se
 
 ### Accessing the Data
 
-There are multiple ways to access the ATUS data; however, for this project, you'll get the raw data directly from the source. The data for each year can be found at [https://www.bls.gov/tus/#data](https://www.bls.gov/tus/#data). Once there, there is an option of downloading a multi-year file, which includes data for all of the years the survey has been conducted, but **for the purposes of this project, let's just look at the data for 2016**. Under **Data Files**, click on `American Time Use Survey--2016 Microdata files`. 
+There are multiple ways to access the ATUS data; however, for this project, you'll get the raw data directly from the source. The data for each year can be found at [https://www.bls.gov/tus/#data](https://www.bls.gov/tus/#data). Once there, there is an option of downloading a multi-year file, which includes data for all of the years the survey has been conducted, but **for the purposes of this project, let's just look at the data for 2016**.
 
 You will be brought to a new screen. Scroll down to the section **2016 Basic ATUS Data Files**. Under this section, you'll want to **click to download** the following two files: `ATUS 2016 Activity summary file (zip)` and `ATUS-CPS 2016 file (zip)`. 
 
@@ -65,19 +67,29 @@ atus.all <- atus.sum %>%
 ### Exploratory Analysis of Child Care Data
 
 ```{r initial-exploration, results = "hide"}
-### general exploratory code
+##### general exploratory code
+#### if this code chunk was printed the web page will be too long to view, out of courtesy this code chunk's reports have been hidden.
+### please contact me for any questions!
+#this code allows us to see the available strings
 str(atus.all) 
+#this code allows us to see the summary of the dataset
 summary(atus.all)
+# code lists all the code names
 colnames(atus.all)
+# code lists all the row names
 rownames(atus.all)
+#code shows the dimensions of the dataset
+dim(atus.all)
 ```
 
 ```{r average}
- ## find average amount of time person spends doing "t120101"
-mean(atus.all$t120101)
+ ## find average amount of time person spends doing "t120101" or socializing and communicating with others
+colnames(atus.all)[colnames(atus.all)=="t120101"] <- "external_social_communication"
+  mean(atus.all$external_social_communication)
 
 ```
 
+On average perople in the year 2016 spent 38 minutes socializing with others, this number does not reflect race, age, marital status or income. 
 
 ```{r creating-childcare-var, results = "hide"}
 ## write out al columns up to t030112 for sum of CHILDCARE column.
@@ -87,7 +99,8 @@ atus.all <- atus.all %>%
 ```
 Creating new column.
 ```{r childcare-density-plot}
-childcare_density_plot <- ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
+childcare_density_plot <- 
+  ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
     geom_density()
 ```
 This graph shows us the respondents that correlate with the amount of time spent with their children.
@@ -157,10 +170,11 @@ In this graph we can see that a respondent's income* does not necessarily affect
         
 \*Note that income is based on household, not individual respondent.\*
 ```{r exploratory-analysis 3}
+
 ## do married people spend more time with children than single parents
-      ggplot(adults_atLeast_one_kid, aes(x = PEMARITL, stat = CHILDCARE)) +
-        geom_histogram(binwidth = 0.2) +
-       labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
+      ggplot(adults_atLeast_one_kid, aes(x = factor(PEMARITL), y = CHILDCARE, fill = factor(PEMARITL))) +
+         geom_bar(stat = "identity") +
+         labs( x = "Marital Status", y = "CHILDCARE \n minutes per week", title = "Do married people spend more time with \n their children than single people?")
 ```
 
 With the Marital Status Key* in mind \*(see below)\*, we can see that married respondents with the spouse present on average spend more time with their children than any of the other categories of respondents. 
@@ -173,9 +187,10 @@ With the Marital Status Key* in mind \*(see below)\*, we can see that married re
       + 5 Separated
       + 6 Never married
 ``` {r exploratory-analysis 4}
+ filter(adults_atLeast_one_kid, !is.na(TRDPFTPT)) %>%
 ## do full-time workers spend more time than part-time workers?
-      ggplot(adults_atLeast_one_kid, aes(x = TRDPFTPT, y = CHILDCARE)) +
-        geom_point(aes(color = TRDPFTPT)) +
+      ggplot(aes(x = factor(TRDPFTPT), y = CHILDCARE, color = factor(TRDPFTPT))) +
+        geom_point() +
          labs( x = "Employment Status", y = "CHILDCARE \n minutes per week", title = "Do full-time workers spend more time with \n their children than part-time workers?")
 ```
 
@@ -225,7 +240,7 @@ df.long <- atus.wide %>%
 head(df.long)
 ```
 
-```{r age-activity}
+```{r age-activity, fig.height=12}
 # Plot for average amount of time spent by age!
 # pull from the desired data set, in this case we are working with df.long
 df.long %>%      
@@ -238,7 +253,9 @@ df.long %>%
         geom_bar(stat = "identity", aes(color = factor(TEAGE)))+
         facet_grid(rows = vars(ACTIVITY)) +
         coord_flip()+
-        labs( title = "Average amount of time spent \n per person's age")
+        labs( title = "Average amount of time spent \n per person's age") +
+        theme(text = element_text(size=18),
+        axis.text.x = element_text(angle=90, hjust=1))
 ```         
 
 
@@ -253,9 +270,14 @@ activity_by_income <-df.long %>%
   group_by(ACTIVITY, HEFAMINC) %>% 
   ## add the rest of the code here
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-  ggplot(aes(x = ACTIVITY,y = AVGMINS_WRK)) +
-    geom_bar(stat = "identity", aes(color = factor(HEFAMINC))) +
-        scale_colour_hue(h = c(180, 270)) +
+  #create new colummn to set y-axis equal from 0 to 1 for proportions 
+  mutate(SumMins = sum(AVGMINS_WRK)) %>%
+  #divide the new column by the average to create percentafe proportions
+  mutate(AvgSumMins = AVGMINS_WRK/SumMins)%>%
+  #plot the graph
+  ggplot(aes(x = ACTIVITY,y = AvgSumMins)) +
+    geom_bar(stat = "identity", aes(fill = factor(HEFAMINC))) +
+        scale_fill_hue(h = c(180, 450)) +
         coord_flip()+
          labs(title = "Amount of time spent on activities \n by income")
 
