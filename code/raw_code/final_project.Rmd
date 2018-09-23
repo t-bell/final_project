@@ -102,6 +102,8 @@ Creating new column.
 childcare_density_plot <- 
   ggplot(atus.all, aes(CHILDCARE, na.rm = FALSE)) +
     geom_density()
+
+childcare_density_plot
 ```
 This graph shows us the respondents that correlate with the amount of time spent with their children.
 ```{r gender-analysis}
